@@ -1,6 +1,20 @@
 /*
   CN0349.cpp
+  Copyright (c) 2019 Joshua Girgis.  All right reserved.
+   This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 
 #include <Wire.h>// used for I2C communication
 #include "avr/pgmspace.h"
@@ -155,14 +169,14 @@ float CN0349::sweep(uint8_t switch1, uint8_t switch2) { //performs frequency swe
   //_delay_ms(100);
   ////////////////////////////////////////////////4. poll status register until complete
   while (checkStatus() < 6) {
-  while (checkStatus() < 4) {
+    while (checkStatus() < 4) {
   // for (int i = 0; i < 10; i++) {
     //Serial.print(checkStatus());
-    _delay_ms(80);
-    if (checkStatus() == validImpedanceData) {
+      _delay_ms(80);
+      if (checkStatus() == validImpedanceData) {
       // 5. read values
-      real = AD5934byteRead(REAL_DATA_REGISTER[0]) << 8;
-      real |= AD5934byteRead(REAL_DATA_REGISTER[1]);
+        real = AD5934byteRead(REAL_DATA_REGISTER[0]) << 8;
+        real |= AD5934byteRead(REAL_DATA_REGISTER[1]);
 
       if (real > 0x7FFF) { // negative value
         real &= 0x7FFF;
@@ -175,7 +189,7 @@ float CN0349::sweep(uint8_t switch1, uint8_t switch2) { //performs frequency swe
         imag -= 0x10000;
       }
       magnitude = sqrt(pow(double(real), 2) + pow(double(imag), 2));
-	  double phase = atan(double(imag) / double(real));
+      double phase = atan(double(imag) / double(real));
 
 	 // Serial.println(magnitude,20);
       setControlRegister(INCREMENT);
@@ -183,9 +197,9 @@ float CN0349::sweep(uint8_t switch1, uint8_t switch2) { //performs frequency swe
     }
   }
   _delay_ms(80);
-  }
-  setControlRegister(POWER_DOWN);
-  return magnitude;
+}
+setControlRegister(POWER_DOWN);
+return magnitude;
 }
 
 float CN0349::calibrate(double rcal, double rfb) {
@@ -261,7 +275,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   }
   else {
     flag = 0;
-	return 0;
+    return 0;
   }
   if (!(flag = 0)) {
     magnitude = sweep(switch1, switch2);      //get conductance magnitude
