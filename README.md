@@ -6,8 +6,10 @@ The CN0349 is a 2 probe conductivity sensor!
 The AD5933 chip needs to be calibrated to correctly measure conductivity.
 
 ## Requirements
-  EEPROM library from Arduino
-  Wire Library from Arduino
+
+  •EEPROM library from Arduino
+  
+  •Wire Library from Arduino
   
 ## Usage
  
