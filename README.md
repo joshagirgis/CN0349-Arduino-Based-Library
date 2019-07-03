@@ -29,7 +29,7 @@ uint8_t measure(float GF_rtd, float GF, double NOS, float slope, float intercept
 ``` 	
 measure(arguments) will measure an the unknown water impedance(imp)->convert to conductivity(Y_cell) and measure the Pt100 RTD's impedance(T_imp)-> converting to temperature(T_cell).
 Additionally it will calculate the salinity of the water using those properties.
-I have included a linear regression argument in slope and intercept so the user can calibrate their values again if their probe is not a K=1.0 cell conastant.
+I have included a linear regression argument in slope and intercept so the user can calibrate their values again if their probe is not a K=1.0 cell constant.
 Other wise use slope=1 and intercept=0
 
 **measure(arguments) needs the gain factors and offsets to be calculated. Those can be calculated as per:** https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
