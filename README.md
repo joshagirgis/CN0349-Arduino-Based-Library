@@ -30,8 +30,8 @@ Additionally it will calculate the salinity of the water using those properties.
 I have included a linear regression argument in slope and intercept so the user can calibrate their values again if their probe is not a K=1.0 cell conastant.
 Other wise use slope=1 and intercept=0
 
-measure(arguments) needs the gain factors and offsets to be calculated. Those can be calculated as per https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
-An example of calculating those singleton values can be seen in CN0349Test.ino.
+**measure(arguments) needs the gain factors and offsets to be calculated. Those can be calculated as per:** https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
+**An example of calculating those singleton values can be seen in CN0349Test.ino.**
 
 By default the library is setup to save these values to the atmega's EEPROM, the constant addresses can be found in CN0349.h.
 
