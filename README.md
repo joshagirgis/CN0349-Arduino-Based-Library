@@ -27,7 +27,7 @@ calibrate will do a frequency sweep across the known onboard resistors and get t
 ```
 uint8_t measure(float GF_rtd, float GF, double NOS, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell); //high or low measurment ranges
 ``` 	
-measure(arguments) will measure an the unknown water impedance(imp)->convert to conductivity(Y_cell) and measure the Pt100 RTD's impedance(T_imp)-> converting to temperature(T_cell).
+measure(arguments) will measure an the unknown water impedance(imp) in ohms->convert to conductivity(Y_cell) in mS/cm and measure the Pt100 RTD's impedance(T_imp) in ohms-> converting to temperature(T_cell) in degrees C.
 Additionally it will calculate the salinity of the water using those properties.
 I have included a linear regression argument in slope and intercept so the user can calibrate their values again if their probe is not a K=1.0 cell constant.
 Other wise use slope=1 and intercept=0
