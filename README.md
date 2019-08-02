@@ -4,6 +4,7 @@ Analog Devices Water/Seawater Conductivity Sensor using Wire (Arduino) I2C libra
 This Library allows use of the CN0349 Board, the AD5933 chip, and/or the ADG715 chips to read water temperature, conductivity, and salinity.
 The CN0349 is a 2 probe conductivity sensor!
 The AD5933 chip needs to be calibrated to correctly measure conductivity.
+**A full example of using the CN0349 and calculating Gain factors for first time use can be seen in CN0349Test.ino.**
 
 ## Wiring
 https://wiki.analog.com/resources/eval/user-guides/circuits-from-the-lab/cn0349.
@@ -41,16 +42,37 @@ It will also call Wire.begin()
 ```
 float calibrate(double rcal, double rfb);
 ```  
-calibrate will do a frequency sweep across the known onboard resistors and get their Magnitude(impedance);
+calibrate will do a frequency sweep across a known onboard resistor, with the help of a feedback resistor, using the ADG715 (octal mux) and get their "Magnitude". The onboard resistors are as follows:
+```
+///////////////////////////////////////////////////////////////////////////////////////////
+//ADG715 switches of CN-0349
+///////////////////////////////////////////////////////////////////////////////////////////
+//calibrating
+//      Rcal(ohms) | Rfb(ohms)  |Channels
+//RTD:   R3(100)     R9(100)      4,1
+//High1: R3(100)     R9(100)      4,1
+//High2: R4(1000)    R9(100)      5,1
+//Low1:  R4(1000)    R8(1000)     5,2
+//Low2:  R7(10000)   R8(1000)     6,2
+```
+The 1 and 2 modes are for calculating the gain factors for measure below.
 ```
 uint8_t measure(float GF_rtd, float GF, double NOS, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell); //high or low measurment ranges
 ``` 	
 measure(arguments) will measure an the unknown water impedance(imp) in ohms->convert to conductivity(Y_cell) in mS/cm and measure the Pt100 RTD's impedance(T_imp) in ohms-> converting to temperature(T_cell) in degrees C.
 Additionally it will calculate the salinity of the water using those properties.
-I have included a linear regression argument in slope and intercept so the user can calibrate their values again if their probe is not a K=1.0 cell constant or is some custom configuration of pins.
+The CN0349 uses the ADG715 to switch precision feedback resistors to measure the Pt100 rtd and conductivity. There are three (/two) modes, RTD, High and LOW. 
+```
+//measuring
+//      Rfb(ohms)  |Channels
+//RTD:   R3(100)       1,7
+//High:  R3(100)       1,8
+//Low:   R4(1000)      2,8
+```
+I have also included a linear regression argument in (slope and intercept) so the user can calibrate their values again if their probe is not a K=1.0 cell constant or is some custom configuration of pins.
 Other wise use slope=1 and intercept=0
 
-**measure(arguments) needs the gain factors and offsets to be calculated. Those can be calculated as per:** 
+**measure(arguments) needs the gain factors and offsets (GF_rtd, GF, NOS) to be calculated. Those can be calculated as per:** 
 https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
 
 **An example of calculating those singleton values can be seen in CN0349Test.ino.**
