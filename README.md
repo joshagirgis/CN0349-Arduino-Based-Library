@@ -4,7 +4,7 @@ Analog Devices Water/Seawater Conductivity Sensor using Wire (Arduino) I2C libra
 This Library allows use of the CN0349 Board, the AD5933 chip, and/or the ADG715 chips to read water temperature, conductivity, and salinity.
 The CN0349 is a 2 probe conductivity sensor!
 The AD5933 chip needs to be calibrated to correctly measure conductivity.
-**A full example of using the CN0349 and calculating Gain factors for first time use can be seen in CN0349Test.ino.**
+**A full example of using the CN0349, and calculating Gain factors for first time use can be seen in CN0349Test.ino.**
 
 ## Wiring
 https://wiki.analog.com/resources/eval/user-guides/circuits-from-the-lab/cn0349.
