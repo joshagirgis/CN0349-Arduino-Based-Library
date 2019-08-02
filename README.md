@@ -7,7 +7,9 @@ The AD5933 chip needs to be calibrated to correctly measure conductivity.
 
 ## Wiring
 https://wiki.analog.com/resources/eval/user-guides/circuits-from-the-lab/cn0349.
-This link provides a pinout near the bottom of the page but to remove confusion if you hold the board so that screw header faces you and the 8 pin header away: https://www.analog.com/en/design-center/reference-designs/hardware-reference-design/circuits-from-the-lab/cn0349.html
+ <br />
+This link provides a pinout near the bottom of the page but to remove confusion if you hold the board so that screw header faces you and the 8 pin header away: 
+ <br />https://www.analog.com/en/design-center/reference-designs/hardware-reference-design/circuits-from-the-lab/cn0349.html
 ```
   PINS:
   1 3 5 7
@@ -21,13 +23,13 @@ This link provides a pinout near the bottom of the page but to remove confusion 
 Wire SDA to arduino's SDA(A4 for UNO) SCL (A5 for UNO). VDD to 3.3V, DGND to GND.
 The LED should light up when correctly connected
 
-## Requirements
+## Software Requirements
 
   •EEPROM library from Arduino
   
   •Wire Library from Arduino
   
-## Usage
+## Software Usage
  
  ### Definitions
  
@@ -48,9 +50,28 @@ Additionally it will calculate the salinity of the water using those properties.
 I have included a linear regression argument in slope and intercept so the user can calibrate their values again if their probe is not a K=1.0 cell constant or is some custom configuration of pins.
 Other wise use slope=1 and intercept=0
 
-**measure(arguments) needs the gain factors and offsets to be calculated. Those can be calculated as per:** https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
+**measure(arguments) needs the gain factors and offsets to be calculated. Those can be calculated as per:** 
+https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
 
 **An example of calculating those singleton values can be seen in CN0349Test.ino.**
 
 By default the library is setup to save these values to the atmega's EEPROM, the constant addresses can be found in CN0349.h.
 
+## RF Considerations
+The CN0349 may cause RF interference. (GPS OR MODEM BEWARE). This is from the ADuM isolator parts. For redesign purposes, there are a few techniques on how to handle this, and thankfully someone wrote them up in a nice little app note. 
+ <br />https://www.analog.com/media/en/technical-documentation/application-notes/AN-0971.pdf.
+ <br />
+One easy option, without redesign, is to move the CN0349 farther away from other RF parts. 
+ <br />
+If a compact system is needed one can remove the ADuM isolator parts if they are intent on reducing the RF emissions. This would be the ADuM5000 and the ADuM1250. NOTE: this defeats the "Fully, Isolated" part of the sensor.
+ <br />
+Once this is done one would have to also remove R16 and R17 pullup resistors, short the VDD to VDDiso, and short GND to GNDiso.
+ <br />
+The respective board should look like this (note the desoldered resistors):
+https://imgur.com/a/p5SC4JI
+ <br />
+A better design could include an I2C optical isolator such as:
+ <br />
+https://www.digikey.com/product-detail/en/ixys-integrated-circuits-division/CPC5902G/CLA380-ND/2816056
+ <br />
+I have yet to find a low emissions isolator part for isolating the power supply.
