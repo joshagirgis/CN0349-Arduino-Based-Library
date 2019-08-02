@@ -68,6 +68,7 @@ If a compact system is needed one can remove the ADuM isolator parts if they are
 Once this is done one would have to also remove R16 and R17 pullup resistors, short the VDD to VDDiso, and short GND to GNDiso.
  <br />
 The respective board should look like this (note the desoldered resistors):
+ <br />
 https://imgur.com/a/p5SC4JI
  <br />
 A better design could include an I2C optical isolator such as:
