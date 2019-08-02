@@ -2,7 +2,7 @@
 #include <CN0349.h>
 
 CN0349 CT;  //initialize CT sensor
-
+//GF_low_addr, GF_high_addr, NOS_high_addr, NOS_low_addr, calibState_addr are stored in CN0349.h
 //For saving calibration gain factors and offsets:
 template <class T> int EEPROM_writeAnything(int ee, const T& value) { //saves value into memory
   const uint8_t* p = (const uint8_t*)(const void*)&value;
