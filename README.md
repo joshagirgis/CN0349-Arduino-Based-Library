@@ -6,7 +6,7 @@ The CN0349 is a 2 probe conductivity sensor!
 The AD5933 chip needs to be calibrated to correctly measure conductivity.
 
 ## Wiring
-https://wiki.analog.com/resources/eval/user-guides/circuits-from-the-lab/cn0349
+https://wiki.analog.com/resources/eval/user-guides/circuits-from-the-lab/cn0349.
 This link provides a pinout near the bottom of the page but to remove confusion if you hold the board so that screw header faces you and the 8 pin header away: https://www.analog.com/en/design-center/reference-designs/hardware-reference-design/circuits-from-the-lab/cn0349.html
 ```
   PINS:
@@ -15,9 +15,12 @@ This link provides a pinout near the bottom of the page but to remove confusion 
   ```
   This pinout corresponds to the following
 ```
-  SCL,SDA,DGND,3.3V 
-  SCL,SDA,DGND,3.3V 
+  SCL,SDA,DGND,VDD
+  SCL,SDA,DGND,VDD
 ```
+Wire SDA to arduino's SDA(A4 for UNO) SCL (A5 for UNO). VDD to 3.3V, DGND to GND.
+The LED should light up when correctly connected
+
 ## Requirements
 
   •EEPROM library from Arduino
