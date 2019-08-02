@@ -5,6 +5,16 @@ This Library allows use of the CN0349 Board, the AD5933 chip, and/or the ADG715 
 The CN0349 is a 2 probe conductivity sensor!
 The AD5933 chip needs to be calibrated to correctly measure conductivity.
 
+## Wiring
+https://wiki.analog.com/resources/eval/user-guides/circuits-from-the-lab/cn0349
+This link provides a pinout near the bottom of the page but to remove confusion if you hold the board so that screw header faces you and the 8 pin header away: https://www.analog.com/en/design-center/reference-designs/hardware-reference-design/circuits-from-the-lab/cn0349.html
+PINS:
+1 3 5 7
+2 4 6 8
+This pinout corresponds to the following
+SCL,SDA,DGND,3.3V 
+SCL,SDA,DGND,3.3V 
+
 ## Requirements
 
   •EEPROM library from Arduino
