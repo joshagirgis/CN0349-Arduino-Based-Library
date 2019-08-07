@@ -50,6 +50,8 @@ void calibrateCN0349(char state) { //find, and save gain factors, and offsets. S
     EEPROM_writeAnything(GF_low_addr, GF_low); //save values
     EEPROM_writeAnything(NOS_low_addr, NOS_low);
     EEPROM_writeAnything(calibState_addr, 2);
+    Serial.println(GF_low, 30);
+    Serial.println(NOS_low, 30);
   }
   //HIGH MODE:
   if (state == 'H') {
@@ -70,10 +72,9 @@ void calibrateCN0349(char state) { //find, and save gain factors, and offsets. S
     EEPROM_writeAnything(GF_high_addr, GF_high);  //save values in memory
     EEPROM_writeAnything(NOS_high_addr, NOS_high);
     EEPROM_writeAnything(calibState_addr, 1);
+    Serial.println(GF_high, 30);
+    Serial.println(NOS_high, 30);
   }
-  Serial.println(GF_high, 30);
-  Serial.println(NOS_high, 30);
-
   Serial.println(F("Calibration Done"));
 }
 
