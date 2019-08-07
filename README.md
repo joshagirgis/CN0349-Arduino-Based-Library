@@ -70,7 +70,7 @@ The CN0349 uses the ADG715 to switch precision feedback resistors to measure the
 //Low:   R4(1000)      2,8
 ```
 I have also included a linear regression argument in (slope and intercept) so the user can calibrate their values again if their probe is not a K=1.0 cell constant or is some custom configuration of pins.
-Other wise use slope=1 and intercept=0
+Other wise use slope=1 and intercept=0. If needed you can use slope = Cellconstant if you have a known constant, keep intecept = 0
 
 **measure(arguments) needs the gain factors and offsets (GF_rtd, GF, NOS) to be calculated. Those can be calculated as per:** 
 https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
