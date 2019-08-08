@@ -77,15 +77,15 @@ https://www.analog.com/media/en/reference-design-documentation/reference-designs
 
 **An example of calculating those singleton values can be seen in CN0349Test.ino.**
 
-By default the library is setup to save these values to the atmega's EEPROM, the constant addresses can be found in CN0349.h.
+By default the library is setup to save these values to the atmega's EEPROM, the constant addresses can be found in CN0349.h. NOTE: the EEPROM for the atmega chip is cleared after reprogramming with an AVR programmer, look into setting the fuses to not clear the EERPROM when reprogamming.
 
 ## RF Considerations
-The CN0349 may cause RF interference. (GPS OR MODEM BEWARE). This is from the ADuM isolator parts. For redesign purposes, there are a few techniques on how to handle this, and thankfully someone wrote them up in a nice little app note. 
+The CN0349 may cause RF interference. (GPS/MODEM BEWARE). This is from the ADuM isolator parts. For redesign purposes, there are a few techniques on how to handle this, and thankfully someone wrote them up in a nice little app note. 
  <br />https://www.analog.com/media/en/technical-documentation/application-notes/AN-0971.pdf.
  <br />
 One easy option, without redesign, is to move the CN0349 farther away from other RF parts. 
  <br />
-If a compact system is needed one can remove the ADuM isolator parts if they are intent on reducing the RF emissions. This would be the ADuM5000 and the ADuM1250. NOTE: this defeats the "Fully, Isolated" part of the sensor.
+If a compact system is needed one can remove the ADuM isolator parts, if they are intent on reducing the RF emissions. The parts to remove would be the ADuM5000 and the ADuM1250. NOTE: this defeats the "Fully, Isolated" part of the sensor.
  <br />
 Once this is done one would have to also remove R16 and R17 pullup resistors, short the VDD to VDDiso, and short GND to GNDiso.
  <br />
