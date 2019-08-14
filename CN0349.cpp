@@ -261,7 +261,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   switch2 = 7;
   magnitude = sweep(switch1, switch2);    //measure temperature
   *T_imp = 1 / (magnitude * GF_rtd);
-  *T_imp = *T_imp-0.9;
+  *T_imp = *T_imp;// add offsets?
   *T_cell = (-A + sqrt(pow(A, 2) - 4 * B * (1 - *T_imp / 100))) / (2 * B); //convert impedence to temperature (known pt100 formula)
   //Rt = R0 * (1 + A* t + B*t2 + C*(t-100)* t3)
 
@@ -288,7 +288,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   //YX = (NX-NOS)*GF
   //YCELL = YX / (1 - 100 * YX);
   *imp = 1 / (magnitude * GF);
-  *imp=*imp-2.4;
+  *imp=*imp; //add offsets?
   NX = magnitude;
   YX = (NX - NOS) * GF;
   if (state == 'H') { //high measurement rfb = r9
