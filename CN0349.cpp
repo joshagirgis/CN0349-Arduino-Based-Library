@@ -1,20 +1,20 @@
 /*
   CN0349.cpp
-  Copyright (c) 2019 Joshua Girgis.  All right reserved.
-   This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  this code uses portions of the conduino code with different hardware and adjustments
+  MIT License
+Copyright (c) 2017 FESLab
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+and associated documentation files (the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, 
+subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE 
+USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
 
 #include <Wire.h>// used for I2C communication
 #include "avr/pgmspace.h"
@@ -102,22 +102,25 @@ bool CN0349::setNumberOfIncrements(uint8_t n) {
 
 bool CN0349::setNumberOfSettlingTimes(uint8_t n) {
   int decode;
-  int numSettlingTimes = (n)<(2047)?(n):(2047);
-  if (n > 1023) {
-    decode = 3;
+  int numSettlingTimes = (n)<(2044)?(n):(2044);
+  if (n > 1023) { // put into 9 bit
+    decode = 3; // times 4
     numSettlingTimes /= 4;
   }
-  else if (n > 511) {
-    decode = 1;
+  else if (n > 511) { // put into 9 bit!
+    decode = 1; //times 2
     numSettlingTimes /= 2;
   }
-  else {
-    decode = 0;
+  else {  // within 9 bit range
+    decode = 0; //default
     numSettlingTimes = n;
   }
   bool i2cStatus;
+   //get MSB add decode value with a 0 at the end to include the MSB
+  // ignore first 8 bits
   i2cStatus = AD5934byteWrite(NUM_SETTLING_CYCLES_REGISTER[0], (numSettlingTimes >> 8) + (decode << 1));
-  i2cStatus = AD5934byteWrite(NUM_SETTLING_CYCLES_REGISTER[0], numSettlingTimes & 255);
+  //put 8 bit number in the second address.
+  i2cStatus = AD5934byteWrite(NUM_SETTLING_CYCLES_REGISTER[1], numSettlingTimes & 255);
   return i2cStatus;
 }
 
@@ -138,7 +141,6 @@ bool CN0349::setControlRegister2() { //initalize D11 D10 D9 D8 @0x80 Excitation 
   _delay_ms(10);
   return s;
 }
-
 
 float CN0349::sweep(uint8_t switch1, uint8_t switch2) { //performs frequency sweep for real and unreal components, returns the magnitude
   float magnitude;
@@ -168,15 +170,15 @@ float CN0349::sweep(uint8_t switch1, uint8_t switch2) { //performs frequency swe
   setControlRegister(START_SWEEP);
   //_delay_ms(100);
   ////////////////////////////////////////////////4. poll status register until complete
-  while (checkStatus() < 6) {
-    while (checkStatus() < 4) {
-  // for (int i = 0; i < 10; i++) {
-    //Serial.print(checkStatus());
-      _delay_ms(80);
-      if (checkStatus() == validImpedanceData) {
+  //while (checkStatus() < 6) {
+  while (checkStatus() < 4) {
+   //for (int i = 0; i < 10; i++) {
+    //print(checkStatus());
+    //_delay_ms(80);
+    if (checkStatus() == validImpedanceData) {
       // 5. read values
-        real = AD5934byteRead(REAL_DATA_REGISTER[0]) << 8;
-        real |= AD5934byteRead(REAL_DATA_REGISTER[1]);
+      real = AD5934byteRead(REAL_DATA_REGISTER[0]) << 8;
+      real |= AD5934byteRead(REAL_DATA_REGISTER[1]);
 
       if (real > 0x7FFF) { // negative value
         real &= 0x7FFF;
@@ -189,17 +191,15 @@ float CN0349::sweep(uint8_t switch1, uint8_t switch2) { //performs frequency swe
         imag -= 0x10000;
       }
       magnitude = sqrt(pow(double(real), 2) + pow(double(imag), 2));
-      double phase = atan(double(imag) / double(real));
-
-	 // Serial.println(magnitude,20);
+    double phase = atan(double(imag) / double(real));
       setControlRegister(INCREMENT);
-	//setControlRegister(REPEAT_FREQ);
+  //setControlRegister(REPEAT_FREQ);
     }
+  //}
+ // _delay_ms(80);
   }
-  _delay_ms(80);
-}
-setControlRegister(POWER_DOWN);
-return magnitude;
+  setControlRegister(POWER_DOWN);
+  return magnitude;
 }
 
 float CN0349::calibrate(double rcal, double rfb) {
@@ -243,7 +243,7 @@ float CN0349::calibrate(double rcal, double rfb) {
   return magnitude;
 };
 
-uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float intercept, char state,float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell) {  //high or low measurment ranges
+uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell) {  //high or low measurment ranges
   const float A = 3.9083 * pow(10, -3);
   const float B = -5.775 * pow(10, -7);
   float magnitude = 0;
@@ -261,7 +261,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   switch2 = 7;
   magnitude = sweep(switch1, switch2);    //measure temperature
   *T_imp = 1 / (magnitude * GF_rtd);
-  *T_imp = *T_imp-0.9;
+  *T_imp = *T_imp;
   *T_cell = (-A + sqrt(pow(A, 2) - 4 * B * (1 - *T_imp / 100))) / (2 * B); //convert impedence to temperature (known pt100 formula)
   //Rt = R0 * (1 + A* t + B*t2 + C*(t-100)* t3)
 
@@ -275,7 +275,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   }
   else {
     flag = 0;
-    return 0;
+  return 0;
   }
   if (!(flag = 0)) {
     magnitude = sweep(switch1, switch2);      //get conductance magnitude
@@ -288,7 +288,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   //YX = (NX-NOS)*GF
   //YCELL = YX / (1 - 100 * YX);
   *imp = 1 / (magnitude * GF);
-  *imp=*imp-2.4;
+  *imp=*imp;
   NX = magnitude;
   YX = (NX - NOS) * GF;
   if (state == 'H') { //high measurement rfb = r9
@@ -361,8 +361,6 @@ float CN0349::tempcondtosal(float cond, float temp) { //convert microsiemens to 
   }
   return sal;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 /////////ADG715
