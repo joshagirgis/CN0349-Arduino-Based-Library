@@ -96,11 +96,8 @@ void loop() {
 
   //CT_error = CT.measure(GF_high, GF_high, NOS_high, slope, intercept, 'H', &Y_cell, &T_cell, &YT_cell);// 'H' = high 'L' =LOW
   CT_error = CT.measure(GF_high, GF_high, NOS_high,  1, 0, 'H', &T_imp, &imp, &Y_cell, &T_cell, &YT_cell);
-  Serial.print(F("Conductivity:   "));
+ // Serial.print(F("Conductivity:   "));
   Serial.println(Y_cell, 3);
-  Serial.print(F("Temperature:   "));
-  Serial.println(T_cell, 3);
-  Serial.print(F("Salinity:   "));
-  Serial.println(YT_cell, 3);
+  
   delay(1000);
 }
