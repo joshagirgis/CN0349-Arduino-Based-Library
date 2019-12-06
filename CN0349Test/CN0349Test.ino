@@ -88,7 +88,6 @@ void setup() {
 void loop() {
   float YL, YH, NH, NL, GF_low, NOS_low, GF_high, NOS_high = 0;
   float Y_cell, T_cell, YT_cell, T_imp, imp = -1;
-  int CT_error;
   //Just please make sure calibrateCN0349 is called at least once in the programs lifetime before the following line!
   EEPROM_readAnything(GF_high_addr, GF_high);  //save values //GF_high = same as GF_rtd
   EEPROM_readAnything(NOS_high_addr, NOS_high);
