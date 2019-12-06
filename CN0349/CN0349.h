@@ -132,8 +132,8 @@ class CN0349{
 	public:
 		void configureAD5934(uint8_t settlingTimes, float startFreq, float freqIncr, uint8_t numIncr);
 		float calibrate(double rcal, double rfb);
-		uint8_t measure(float GF_rtd, float GF, double NOS, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell); //high or low measurment ranges
- 	private:
+		uint8_t measure(float GF_rtd, float GF, double NOS, float t_offset, float c_offset, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell);
+	private:
 	    uint16_t checkStatus();
 		bool AD5934byteWrite(uint8_t address, uint8_t data);
 		uint16_t AD5934byteRead(uint8_t address);

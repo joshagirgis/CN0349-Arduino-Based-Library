@@ -180,16 +180,16 @@ float CN0349::sweep(uint8_t switch1, uint8_t switch2) { //performs frequency swe
       real = AD5934byteRead(REAL_DATA_REGISTER[0]) << 8;
       real |= AD5934byteRead(REAL_DATA_REGISTER[1]);
 
-      if (real > 0x7FFF) { // negative value
-        real &= 0x7FFF;
-        real -= 0x10000;
-      }
+     // if (real > 0x7FFF) { // negative value
+     //   real &= 0x7FFF;
+     //   real -= 0x10000;
+     // }
       imag = AD5934byteRead(IMAG_DATA_REGISTER[0]) << 8;
       imag |= AD5934byteRead(IMAG_DATA_REGISTER[1]);
-      if (imag > 0x7FFF) { // negative value
-        imag &= 0x7FFF;
-        imag -= 0x10000;
-      }
+     // if (imag > 0x7FFF) { // negative value
+     //   imag &= 0x7FFF;
+     //   imag -= 0x10000;
+     // }
       magnitude = sqrt(pow(double(real), 2) + pow(double(imag), 2));
 	  double phase = atan(double(imag) / double(real));
       setControlRegister(INCREMENT);
@@ -243,7 +243,7 @@ float CN0349::calibrate(double rcal, double rfb) {
   return magnitude;
 };
 
-uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell) {  //high or low measurment ranges
+uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float t_offset, float c_offset, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell) {  //high or low measurment ranges
   const float A = 3.9083 * pow(10, -3);
   const float B = -5.775 * pow(10, -7);
   float magnitude = 0;
@@ -261,7 +261,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   switch2 = 7;
   magnitude = sweep(switch1, switch2);    //measure temperature
   *T_imp = 1 / (magnitude * GF_rtd);
-  *T_imp = *T_imp;
+  *T_imp = *T_imp-t_offset;
   *T_cell = (-A + sqrt(pow(A, 2) - 4 * B * (1 - *T_imp / 100))) / (2 * B); //convert impedence to temperature (known pt100 formula)
   //Rt = R0 * (1 + A* t + B*t2 + C*(t-100)* t3)
 
@@ -288,7 +288,7 @@ uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, float slope, float i
   //YX = (NX-NOS)*GF
   //YCELL = YX / (1 - 100 * YX);
   *imp = 1 / (magnitude * GF);
-  *imp=*imp;
+  *imp=*imp-c_offset;
   NX = magnitude;
   YX = (NX - NOS) * GF;
   if (state == 'H') { //high measurement rfb = r9
