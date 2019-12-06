@@ -2,7 +2,7 @@
 #include <CN0349.h>
 
 CN0349 CT;  //initialize CT sensor
-//GF_low_addr, GF_high_addr, NOS_high_addr, NOS_low_addr, calibState_addr are stored in CN0349.h
+
 //For saving calibration gain factors and offsets:
 template <class T> int EEPROM_writeAnything(int ee, const T& value) { //saves value into memory
   const uint8_t* p = (const uint8_t*)(const void*)&value;
@@ -35,10 +35,10 @@ void calibrateCN0349(char state) { //find, and save gain factors, and offsets. S
   if (state == 'L') {
     //LOW MODE:
     L1mag =  CT.calibrate(R4, R4);    //Low range 1 //was 1000 1000
-    Serial.println(L1mag, 30);
+    Serial.println(L1mag, 8);
     Serial.println(F("Low Magnitude 1 Found"));
     L2mag =  CT.calibrate(R7, R4);   //Low range 2
-    Serial.println(L2mag, 30);
+    Serial.println(L2mag, 8);
     Serial.println(F("Low Magnitude 2 Found"));
 
     YL = 1 / R7;   //low admittance
@@ -50,16 +50,14 @@ void calibrateCN0349(char state) { //find, and save gain factors, and offsets. S
     EEPROM_writeAnything(GF_low_addr, GF_low); //save values
     EEPROM_writeAnything(NOS_low_addr, NOS_low);
     EEPROM_writeAnything(calibState_addr, 2);
-    Serial.println(GF_low, 30);
-    Serial.println(NOS_low, 30);
   }
   //HIGH MODE:
   if (state == 'H') {
     H1Tmag = CT.calibrate(R3, R9);     //High range 1
-    Serial.println(H1Tmag, 30);
+    Serial.println(H1Tmag, 8);
     Serial.println(F("High Magnitude 1 Found"));
     H2mag = CT.calibrate(R4, R9);     //High range 2
-    Serial.println(H2mag, 30);
+    Serial.println(H2mag, 8);
     Serial.println(F("High Magnitude 2 Found"));
 
     YL = 1 / R4;   //low admittance
@@ -72,14 +70,15 @@ void calibrateCN0349(char state) { //find, and save gain factors, and offsets. S
     EEPROM_writeAnything(GF_high_addr, GF_high);  //save values in memory
     EEPROM_writeAnything(NOS_high_addr, NOS_high);
     EEPROM_writeAnything(calibState_addr, 1);
-    Serial.println(GF_high, 30);
-    Serial.println(NOS_high, 30);
   }
+  Serial.println(GF_high, 8);
+  Serial.println(NOS_high, 8);
+
   Serial.println(F("Calibration Done"));
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   // put your setup code here, to run once:
   CT.configureAD5934(15, 8 * pow(10, 3), 4, 2);     // number of settling times ,start frequency (Hz),frequency increment (Hz), number of increments
   delay(5);
@@ -90,14 +89,13 @@ void loop() {
   float YL, YH, NH, NL, GF_low, NOS_low, GF_high, NOS_high = 0;
   float Y_cell, T_cell, YT_cell, T_imp, imp = -1;
   int CT_error;
-  //Just please make sure calibrateCN0349 is called at least once in the MCU's lifetime before the following line!
+  //Just please make sure calibrateCN0349 is called at least once in the programs lifetime before the following line!
   EEPROM_readAnything(GF_high_addr, GF_high);  //save values //GF_high = same as GF_rtd
   EEPROM_readAnything(NOS_high_addr, NOS_high);
-
-  //CT_error = CT.measure(GF_high, GF_high, NOS_high, slope, intercept, 'H', &Y_cell, &T_cell, &YT_cell);// 'H' = high 'L' =LOW
-  CT_error = CT.measure(GF_high, GF_high, NOS_high,  1, 0, 'H', &T_imp, &imp, &Y_cell, &T_cell, &YT_cell);
- // Serial.print(F("Conductivity:   "));
+  const float t_offset=0.7;//ohm
+  const float c_offset=0.7+0.7;
+  uint8_t CT_error = CT.measure(GF_high, GF_high, NOS_high, t_offset, c_offset, 1, 0, 'H', &T_imp, &imp, &Y_cell, &T_cell, &YT_cell);
+  Serial.print(F("Conductivity:\t\t"));
   Serial.println(Y_cell, 3);
   
-  delay(1000);
 }
