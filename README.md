@@ -1,9 +1,9 @@
 # CN0349_ConductivitySensor
 Analog Devices Water/Seawater Conductivity Sensor using Wire (Arduino) I2C library
 
-This Library allows use of the CN0349 Board, the AD5933 chip, and/or the ADG715 chips to read water temperature, conductivity, and salinity.
+This Library allows use of the CN0349 Board, the AD5943 chip, and/or the ADG715 chips to read water temperature, conductivity, and salinity.
 The CN0349 is a 2 probe conductivity sensor!
-The AD5933 chip needs to be calibrated to correctly measure conductivity.
+The AD5934 chip needs to be calibrated to correctly measure conductivity.
 **A full example of using the CN0349, and calculating Gain factors for first time use can be seen in CN0349Test.ino.**
 
 ## Wiring
@@ -57,9 +57,10 @@ calibrate will do a frequency sweep across a known onboard resistor, with the he
 ```
 The 1 and 2 modes are for calculating the gain factors for measure below.
 ```
-uint8_t measure(float GF_rtd, float GF, double NOS, float t_offset, float c_offset, float slope, float intercept, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell, float* YT_cell); //high or low measurment ranges
+uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell)  //high or low measurment ranges
+
 ``` 	
-measure(arguments) will measure an the unknown water impedance(imp) in ohms->convert to conductivity(Y_cell) in mS/cm and measure the Pt100 RTD's impedance(T_imp) in ohms-> converting to temperature(T_cell) in degrees C.
+measure(arguments) will measure an the unknown water impedance(imp) in ohms->convert to admittance(Y_cell) in mS and measure the Pt100 RTD's impedance(T_imp) in ohms-> converting to temperature(T_cell) in degrees C.
 Additionally it will calculate the salinity of the water using those properties.
 The CN0349 uses the ADG715 to switch precision feedback resistors to measure the Pt100 rtd and conductivity. There are three (/two) modes, RTD, High and LOW. 
 ```
@@ -78,8 +79,6 @@ https://www.analog.com/media/en/reference-design-documentation/reference-designs
 **An example of calculating those singleton values can be seen in CN0349Test.ino.**
 
 By default the library is setup to save these values to the atmega's EEPROM, the constant addresses can be found in CN0349.h. NOTE: the EEPROM for the atmega chip is cleared after reprogramming with an AVR ICSP programmer, look into setting the fuses to not clear the EERPROM when reprogamming.
-
-Considering wire resistances for the PT100 RTD and pins, one may input the wire resistances, which will be subtracted, in t_offset for the PT100 RTD and c_offset for each conductivity pin. For the Pt100 sensor, 3-wire, or 4 wire, one has to measure the resistances with an ohmmeter first. 
 
 ## RF Considerations
 The CN0349 may cause RF interference. (GPS/MODEM BEWARE). This is from the ADuM isolator parts. For redesign purposes, there are a few techniques on how to handle this, and thankfully someone wrote them up in a nice little app note. 
