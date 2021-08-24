@@ -1,6 +1,5 @@
 /*
   CN0349.cpp
-  this code uses portions of the conduino code with different hardware and adjustments
   MIT License
 Copyright (c) 2017 FESLab
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
