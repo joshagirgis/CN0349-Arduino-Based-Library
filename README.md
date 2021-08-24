@@ -1,9 +1,8 @@
 # CN0349_ConductivitySensor
-Analog Devices Water/Seawater Conductivity Sensor using Wire (Arduino) I2C library
+Analog Devices Conductivity Sensor using Wire (Arduino) I2C library
 
-This Library allows use of the CN0349 Board, the AD5943 chip, and/or the ADG715 chips to read water temperature, conductivity, and salinity.
-The CN0349 is a 2 probe conductivity sensor!
-The AD5934 chip needs to be calibrated to correctly measure conductivity.
+This Library allows use of the CN0349 Board, the AD5943 chip, and/or the ADG715 chips to read temperature and impdeance/admittance
+The AD5934 chip needs to be calibrated to correctly measure the impedance/admittance and then once can use a conductivity probe to get water admittivity. However admittivity is going to very very close to conductivity so they should be synonymous 
 **A full example of using the CN0349, and calculating Gain factors for first time use can be seen in CN0349Test.ino.**
 
 ## Wiring
@@ -57,11 +56,11 @@ calibrate will do a frequency sweep across a known onboard resistor, with the he
 ```
 The 1 and 2 modes are for calculating the gain factors for measure below.
 ```
-uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, char state, float* T_imp, float* imp, float* Y_cell, float* T_cell)  //high or low measurment ranges
+uint8_t CN0349::measure(float GF_rtd, float GF, double NOS, char state, float* T_imp, float* rawimp, float* Y_cell, float* T_cell)  //high or low measurment ranges
 
 ``` 	
-measure(arguments) will measure an the unknown water impedance(imp) in ohms->convert to admittance(Y_cell) in mS and measure the Pt100 RTD's impedance(T_imp) in ohms-> converting to temperature(T_cell) in degrees C.
-Additionally it will calculate the salinity of the water using those properties.
+measure(arguments) will measure an the unknown water impedance(imp) in ohms->convert to admittance(Y_cell) in mS and measure a Pt100 RTD's impedance(T_imp) in ohms-> converting to temperature(T_cell) in degrees C.
+
 The CN0349 uses the ADG715 to switch precision feedback resistors to measure the Pt100 rtd and conductivity. There are three (/two) modes, RTD, High and LOW. 
 ```
 //measuring
@@ -70,8 +69,6 @@ The CN0349 uses the ADG715 to switch precision feedback resistors to measure the
 //High:  R3(100)       1,8
 //Low:   R4(1000)      2,8
 ```
-I have also included a linear regression argument in (slope and intercept) so the user can calibrate their values again if their probe is not a K=1.0 cell constant or is some custom configuration of pins.
-Other wise use slope=1 and intercept=0. If needed you can use slope = Cellconstant if you have a known constant, keep intecept = 0
 
 **measure(arguments) needs the gain factors and offsets (GF_rtd, GF, NOS) to be calculated. Those can be calculated as per:** 
 https://www.analog.com/media/en/reference-design-documentation/reference-designs/CN0349.pdf
@@ -98,4 +95,4 @@ A better design could include an I2C optical isolator such as:
  <br />
 https://www.digikey.com/product-detail/en/ixys-integrated-circuits-division/CPC5902G/CLA380-ND/2816056
  <br />
-I have yet to find a low emissions isolator part for isolating the power supply.
+or an RF shield
