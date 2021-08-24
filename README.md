@@ -1,8 +1,8 @@
 # CN0349_ConductivitySensor
 Analog Devices Conductivity Sensor using Wire (Arduino) I2C library
 
-This Library allows use of the CN0349 Board, the AD5943 chip, and/or the ADG715 chips to read temperature and impdeance/admittance
-The AD5934 chip needs to be calibrated to correctly measure the impedance/admittance and then once can use a conductivity probe to get water admittivity. However admittivity is going to very very close to conductivity so they should be synonymous 
+This library allows use of the CN0349 Board, the AD5943 chip, and/or the ADG715 chips to read temperature and impedance/admittance
+The AD5934 chip needs to be calibrated to correctly measure the impedance/admittance and then one can use a conductivity probe to get water admittivity. However water admittivity is going to very very close to water conductivity so they should be very close to each other. 
 **A full example of using the CN0349, and calculating Gain factors for first time use can be seen in CN0349Test.ino.**
 
 ## Wiring
