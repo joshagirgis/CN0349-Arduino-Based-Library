@@ -91,10 +91,8 @@ void loop() {
   //Just please make sure calibrateCN0349 is called at least once in the programs lifetime before the following line!
   EEPROM_readAnything(GF_high_addr, GF_high);  //save values //GF_high = same as GF_rtd
   EEPROM_readAnything(NOS_high_addr, NOS_high);
-  const float t_offset=0.7;//ohm
-  const float c_offset=0.7+0.7;
-  uint8_t CT_error = CT.measure(GF_high, GF_high, NOS_high, t_offset, c_offset, 1, 0, 'H', &T_imp, &imp, &Y_cell, &T_cell, &YT_cell);
-  Serial.print(F("Conductivity:\t\t"));
+  uint8_t CT_error = CT.measure(GF_high, GF_high, NOS_high, 'H', &T_imp, &imp, &Y_cell, &T_cell);
+  Serial.print(F("Admittance:\t\t"));
   Serial.println(Y_cell, 3);
   
 }
